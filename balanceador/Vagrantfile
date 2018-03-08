@@ -1,0 +1,17 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.ssh.insert_key = false
+  config.vm.define :loadBalancer do |loadBalancer|
+    loadBalancer.vm.box = "centos1706_v0.3.0"
+    loadBalancer.vm.network :private_network, ip: "192.168.33.12"
+    loadBalancer.vm.network "public_network", bridge: "eno1", ip:"192.168.131.43", netmask: "255.255.255.0"
+    loadBalancer.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "1024","--cpus", "1", "--name", "loadBalancer" ]
+	loadBalancer.vm.provision "shell", path: "install.sh"
+    end
+  end
+end
